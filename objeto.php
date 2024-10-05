@@ -95,7 +95,27 @@ class Texto
             $l .= " ";
         }
         $l .= "$preencher";
-        print $l;
+        return $l;
+    }
+    public function alinhar_topicos_tras($topicos,int $j,$preencher)
+    {
+        $itens[] = $this->removerAcentos($topicos);
+        $j += 2;
+        $l = " ";
+        $ad = 0;
+        for($a = 0 ;$a < strlen($topicos); $a++)
+        {
+            if (substr($topicos, $a, 2) == 'Á' || substr($topicos, $a, 2) == 'Ã' || substr($topicos, $a, 2) == 'Â' || substr($topicos, $a, 2) == 'À' || substr($topicos, $a, 2) == 'Ä' || substr($topicos, $a, 2) == 'á' || substr($topicos, $a, 2) == 'ã' || substr($topicos, $a, 2) == 'â' || substr($topicos, $a, 2) == 'à' || substr($topicos, $a, 2) == 'ä' || substr($topicos, $a, 2) == 'É' || substr($topicos, $a, 2) == 'Ẽ' || substr($topicos, $a, 2) == 'Ê' || substr($topicos, $a, 2) == 'È' || substr($topicos, $a, 2) == 'Ë' || substr($topicos, $a, 2) == 'é' || substr($topicos, $a, 2) == 'ẽ' || substr($topicos, $a, 2) == 'ê' || substr($topicos, $a, 2) == 'è' || substr($topicos, $a, 2) == 'ë' || substr($topicos, $a, 2) == 'Í' || substr($topicos, $a, 2) == 'Ĩ' || substr($topicos, $a, 2) == 'Î' || substr($topicos, $a, 2) == 'Ì' || substr($topicos, $a, 2) == 'Ï' || substr($topicos, $a, 2) == 'í' || substr($topicos, $a, 2) == 'ĩ' || substr($topicos, $a, 2) == 'î' || substr($topicos, $a, 2) == 'ì' || substr($topicos, $a, 2) == 'ï' || substr($topicos, $a, 2) == 'Ó' || substr($topicos, $a, 2) == 'Õ' || substr($topicos, $a, 2) == 'Ô' || substr($topicos, $a, 2) == 'Ò' || substr($topicos, $a, 2) == 'Ö' || substr($topicos, $a, 2) == 'ó' || substr($topicos, $a, 2) == 'õ' || substr($topicos, $a, 2) == 'ô' || substr($topicos, $a, 2) == 'ò' || substr($topicos, $a, 2) == 'ö' || substr($topicos, $a, 2) == 'Ú' || substr($topicos, $a, 2) == 'Ũ' || substr($topicos, $a, 2) == 'Û' || substr($topicos, $a, 2) == 'Ù' || substr($topicos, $a, 2) == 'Ü' || substr($topicos, $a, 2) == 'ú' || substr($topicos, $a, 2) == 'ũ' || substr($topicos, $a, 2) == 'û' || substr($topicos, $a, 2) == 'ù' || substr($topicos, $a, 2) == 'ü' || substr($topicos, $a, 2) == 'ç' || substr($topicos, $a, 2) == 'ñ' || substr($topicos, $a, 2) == 'Ñ') 
+            {
+                $ad ++;
+            }
+        }
+        while((strlen($l)+strlen($topicos)-1) < $j+$ad-1)
+        {
+            $l .= " ";
+        }
+        $l .= "$topicos $preencher";
+        return $l;
     }
     public function montar_tabela_programa(array $itens_tabela)
     {
@@ -162,6 +182,123 @@ class Texto
         }
         $l .= ":";
         return $l;
+    }
+    public function espacoTab(array $itens)
+    {
+        $add = 0;
+        foreach($itens as $item)
+        {
+            if(substr($item,(strlen($item)-1),1) == "{")
+            {
+                $nadl[] = $add;
+                $add++;
+            }
+            else if(substr($item,(strlen($item)-1),1) == "}")
+            {
+                $add--;
+                $nadl[] = $add;
+            }
+            else
+            {
+                $nadl[] = $add;
+            }
+        }
+        $novo = array();
+        for($i = 0 ;$i < count($itens) ; $i++)
+        {
+            if($nadl[$i] != 0)
+            {
+                for($j = 0 ; $j < $nadl[$i] ;$j++)
+                {
+                    if($j == 0)
+                    {
+                        $novo[$i] = "\t";
+                    }
+                    else
+                    {
+                        $novo[$i] .= "\t";
+                    }
+                }
+                $novo[$i] .= $itens[$i];
+            }
+            else
+            {
+                $novo[$i] = $itens[$i];
+            }
+        }
+        return $novo;
+    }
+    public function escreva_devagar(string $mensagem)
+    {
+        $tamanho = strlen($mensagem);
+        for($i = 0 ; $i < $tamanho ; $i++)
+        {
+            print substr($mensagem,$i,1);
+            switch(substr($mensagem,$i,1))
+            {
+                case '.': usleep(600000) ;break;
+                case '?': usleep(600000) ;break;
+                case '!': usleep(600000) ;break;
+                case ',': usleep(600000) ;break;
+                case ';': usleep(700000) ;break;
+                default: usleep(40000) ;break;
+            }
+        }
+    }
+}
+
+class Tempo0
+{
+    public function contagemDiaAteHoje($diaPartida,$mesPartida,$anoPartida)
+    {
+        $dia = intval(date('d'));
+        $mes = intval(date('m'));
+        $ano = intval(date('Y'));
+        for($dias = 0 ; "$dia/$mes/$ano" != "$diaPartida/$mesPartida/$anoPartida";$dias++)
+        {
+            if(($dia-1) == 0)
+            {
+                $mes--;
+                if($mes == 0)
+                {
+                    $ano--;
+                    $mes = 12;
+                    $dia = 31;
+                }
+                else
+                {
+                    switch($mes)
+                    {
+                        case 1: $dia = 31 ;break;
+                        case 2: 
+                            if($ano%4 == 0)
+                            {
+                                $dia = 29;
+                            }
+                            else
+                            {
+                                $dia = 28;
+                            }
+                        break;
+                        case 3: $dia = 31 ;break;
+                        case 4: $dia = 30 ;break;
+                        case 5: $dia = 31 ;break;
+                        case 6: $dia = 30 ;break;
+                        case 7: $dia = 31 ;break;
+                        case 8: $dia = 31 ;break;
+                        case 9: $dia = 30 ;break;
+                        case 10: $dia = 31 ;break;
+                        case 11: $dia = 30 ;break;
+                        case 12: $dia = 31 ;break;
+                    }
+                }
+            }
+            else
+            {
+                $dia--;
+            }
+        }
+        return $dias;
     }
 }
 ?>
