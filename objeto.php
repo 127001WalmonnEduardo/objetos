@@ -247,7 +247,7 @@ class Texto
     }
 }
 
-class Tempo0
+class Tempo
 {
     public function contagemDiaAteHoje($diaPartida,$mesPartida,$anoPartida)
     {
