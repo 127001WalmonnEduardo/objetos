@@ -1,16 +1,16 @@
 <?php
 class Texto
 {
-    public function montar_tabela(array $itens_tabela)
+    public static function montarLista(array $itens_tabela)
     {
         $quantidade = count($itens_tabela);
         $maximo = ($quantidade*2)+1;
         $itens  = array();
         for($i = 0 ; $i < $quantidade ;$i++)
         {
-            $itens[] = $this->removerAcentos($itens_tabela[$i]);
+            $itens[] = self::removerAcentos($itens_tabela[$i]);
         }
-        $j = $this->contagem($itens);
+        $j = self::contagem($itens);
         $adv = ($quantidade%10)+10;
         $j += $adv;
         $t = 0;
@@ -28,14 +28,7 @@ class Texto
             else
             {
                 $l = "[ ".($t+1)." -> ".$itens_tabela[$t];
-                $ad = 0;
-                for($a = 0 ;$a < strlen($itens_tabela[$t]); $a++)
-                {
-                    if (substr($itens_tabela[$t], $a, 2) == 'Á' || substr($itens_tabela[$t], $a, 2) == 'Ã' || substr($itens_tabela[$t], $a, 2) == 'Â' || substr($itens_tabela[$t], $a, 2) == 'À' || substr($itens_tabela[$t], $a, 2) == 'Ä' || substr($itens_tabela[$t], $a, 2) == 'á' || substr($itens_tabela[$t], $a, 2) == 'ã' || substr($itens_tabela[$t], $a, 2) == 'â' || substr($itens_tabela[$t], $a, 2) == 'à' || substr($itens_tabela[$t], $a, 2) == 'ä' || substr($itens_tabela[$t], $a, 2) == 'É' || substr($itens_tabela[$t], $a, 2) == 'Ẽ' || substr($itens_tabela[$t], $a, 2) == 'Ê' || substr($itens_tabela[$t], $a, 2) == 'È' || substr($itens_tabela[$t], $a, 2) == 'Ë' || substr($itens_tabela[$t], $a, 2) == 'é' || substr($itens_tabela[$t], $a, 2) == 'ẽ' || substr($itens_tabela[$t], $a, 2) == 'ê' || substr($itens_tabela[$t], $a, 2) == 'è' || substr($itens_tabela[$t], $a, 2) == 'ë' || substr($itens_tabela[$t], $a, 2) == 'Í' || substr($itens_tabela[$t], $a, 2) == 'Ĩ' || substr($itens_tabela[$t], $a, 2) == 'Î' || substr($itens_tabela[$t], $a, 2) == 'Ì' || substr($itens_tabela[$t], $a, 2) == 'Ï' || substr($itens_tabela[$t], $a, 2) == 'í' || substr($itens_tabela[$t], $a, 2) == 'ĩ' || substr($itens_tabela[$t], $a, 2) == 'î' || substr($itens_tabela[$t], $a, 2) == 'ì' || substr($itens_tabela[$t], $a, 2) == 'ï' || substr($itens_tabela[$t], $a, 2) == 'Ó' || substr($itens_tabela[$t], $a, 2) == 'Õ' || substr($itens_tabela[$t], $a, 2) == 'Ô' || substr($itens_tabela[$t], $a, 2) == 'Ò' || substr($itens_tabela[$t], $a, 2) == 'Ö' || substr($itens_tabela[$t], $a, 2) == 'ó' || substr($itens_tabela[$t], $a, 2) == 'õ' || substr($itens_tabela[$t], $a, 2) == 'ô' || substr($itens_tabela[$t], $a, 2) == 'ò' || substr($itens_tabela[$t], $a, 2) == 'ö' || substr($itens_tabela[$t], $a, 2) == 'Ú' || substr($itens_tabela[$t], $a, 2) == 'Ũ' || substr($itens_tabela[$t], $a, 2) == 'Û' || substr($itens_tabela[$t], $a, 2) == 'Ù' || substr($itens_tabela[$t], $a, 2) == 'Ü' || substr($itens_tabela[$t], $a, 2) == 'ú' || substr($itens_tabela[$t], $a, 2) == 'ũ' || substr($itens_tabela[$t], $a, 2) == 'û' || substr($itens_tabela[$t], $a, 2) == 'ù' || substr($itens_tabela[$t], $a, 2) == 'ü' || substr($itens_tabela[$t], $a, 2) == 'ç' || substr($itens_tabela[$t], $a, 2) == 'ñ' || substr($itens_tabela[$t], $a, 2) == 'Ñ') 
-                    {
-                        $ad ++;
-                    }
-                }
+                $ad = self::contarAcentos($itens_tabela[$t]);
                 while(strlen($l) < $j+$ad-1)
                 {
                     $l .= " ";
@@ -46,7 +39,41 @@ class Texto
             }
         }
     }
-    public function contagem($itens_tabela)
+    public static function contarAcentos(string $texto) :int
+    {
+        $acentos = array(
+            'Á', 'À', 'Â', 'Ã', 'Ä', 'Å',
+            'É', 'È', 'Ê', 'Ë',
+            'Í', 'Ì', 'Î', 'Ï',
+            'Ó', 'Ò', 'Ô', 'Õ', 'Ö',
+            'Ú', 'Ù', 'Û', 'Ü',
+            'Ç', 'Ñ',
+            'á', 'à', 'â', 'ã', 'ä', 'å',
+            'é', 'è', 'ê', 'ë',
+            'í', 'ì', 'î', 'ï',
+            'ó', 'ò', 'ô', 'õ', 'ö',
+            'ú', 'ù', 'û', 'ü',
+            'ç', 'ñ'
+        );
+
+        $ad = 0;
+        foreach($acentos as $a)
+        {
+            for($i = 0;$i<strlen($texto);$i++)
+            {
+                if($i+2 <= strlen($texto))
+                {
+                    if(substr($texto,$i,2) == $a)
+                    {
+                        $ad++;
+                    }
+                }
+            }
+        }
+        return $ad;
+    
+    }
+    public static function contagem(array $itens_tabela)
     {
         $j = 0;
         foreach($itens_tabela as $item)
@@ -58,7 +85,7 @@ class Texto
         }
         return $j;
     }
-    public function removerAcentos($string)
+    public static function removerAcentos(string $string)
     {
         $acentos = array(
             'Á' => 'A', 'À' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A',
@@ -77,19 +104,12 @@ class Texto
     
         return strtr($string, $acentos);
     }
-    public function alinhar_topicos($topicos,int $j,$preencher)
+    public static function alinharTopicos(string $topicos,int $j,$preencher)
     {
-        $itens[] = $this->removerAcentos($topicos);
+        $itens[] = self::removerAcentos($topicos);
         $j += 2;
         $l = $topicos;
-        $ad = 0;
-        for($a = 0 ;$a < strlen($topicos); $a++)
-        {
-            if (substr($topicos, $a, 2) == 'Á' || substr($topicos, $a, 2) == 'Ã' || substr($topicos, $a, 2) == 'Â' || substr($topicos, $a, 2) == 'À' || substr($topicos, $a, 2) == 'Ä' || substr($topicos, $a, 2) == 'á' || substr($topicos, $a, 2) == 'ã' || substr($topicos, $a, 2) == 'â' || substr($topicos, $a, 2) == 'à' || substr($topicos, $a, 2) == 'ä' || substr($topicos, $a, 2) == 'É' || substr($topicos, $a, 2) == 'Ẽ' || substr($topicos, $a, 2) == 'Ê' || substr($topicos, $a, 2) == 'È' || substr($topicos, $a, 2) == 'Ë' || substr($topicos, $a, 2) == 'é' || substr($topicos, $a, 2) == 'ẽ' || substr($topicos, $a, 2) == 'ê' || substr($topicos, $a, 2) == 'è' || substr($topicos, $a, 2) == 'ë' || substr($topicos, $a, 2) == 'Í' || substr($topicos, $a, 2) == 'Ĩ' || substr($topicos, $a, 2) == 'Î' || substr($topicos, $a, 2) == 'Ì' || substr($topicos, $a, 2) == 'Ï' || substr($topicos, $a, 2) == 'í' || substr($topicos, $a, 2) == 'ĩ' || substr($topicos, $a, 2) == 'î' || substr($topicos, $a, 2) == 'ì' || substr($topicos, $a, 2) == 'ï' || substr($topicos, $a, 2) == 'Ó' || substr($topicos, $a, 2) == 'Õ' || substr($topicos, $a, 2) == 'Ô' || substr($topicos, $a, 2) == 'Ò' || substr($topicos, $a, 2) == 'Ö' || substr($topicos, $a, 2) == 'ó' || substr($topicos, $a, 2) == 'õ' || substr($topicos, $a, 2) == 'ô' || substr($topicos, $a, 2) == 'ò' || substr($topicos, $a, 2) == 'ö' || substr($topicos, $a, 2) == 'Ú' || substr($topicos, $a, 2) == 'Ũ' || substr($topicos, $a, 2) == 'Û' || substr($topicos, $a, 2) == 'Ù' || substr($topicos, $a, 2) == 'Ü' || substr($topicos, $a, 2) == 'ú' || substr($topicos, $a, 2) == 'ũ' || substr($topicos, $a, 2) == 'û' || substr($topicos, $a, 2) == 'ù' || substr($topicos, $a, 2) == 'ü' || substr($topicos, $a, 2) == 'ç' || substr($topicos, $a, 2) == 'ñ' || substr($topicos, $a, 2) == 'Ñ') 
-            {
-                $ad ++;
-            }
-        }
+        $ad = self::contarAcentos($topicos);
         while(strlen($l) < $j+$ad-1)
         {
             $l .= " ";
@@ -97,19 +117,12 @@ class Texto
         $l .= "$preencher";
         return $l;
     }
-    public function alinhar_topicos_tras($topicos,int $j,$preencher)
+    public static function alinharTopicosTras(string $topicos,int $j,$preencher)
     {
-        $itens[] = $this->removerAcentos($topicos);
+        $itens[] = self::removerAcentos($topicos);
         $j += 2;
         $l = " ";
-        $ad = 0;
-        for($a = 0 ;$a < strlen($topicos); $a++)
-        {
-            if (substr($topicos, $a, 2) == 'Á' || substr($topicos, $a, 2) == 'Ã' || substr($topicos, $a, 2) == 'Â' || substr($topicos, $a, 2) == 'À' || substr($topicos, $a, 2) == 'Ä' || substr($topicos, $a, 2) == 'á' || substr($topicos, $a, 2) == 'ã' || substr($topicos, $a, 2) == 'â' || substr($topicos, $a, 2) == 'à' || substr($topicos, $a, 2) == 'ä' || substr($topicos, $a, 2) == 'É' || substr($topicos, $a, 2) == 'Ẽ' || substr($topicos, $a, 2) == 'Ê' || substr($topicos, $a, 2) == 'È' || substr($topicos, $a, 2) == 'Ë' || substr($topicos, $a, 2) == 'é' || substr($topicos, $a, 2) == 'ẽ' || substr($topicos, $a, 2) == 'ê' || substr($topicos, $a, 2) == 'è' || substr($topicos, $a, 2) == 'ë' || substr($topicos, $a, 2) == 'Í' || substr($topicos, $a, 2) == 'Ĩ' || substr($topicos, $a, 2) == 'Î' || substr($topicos, $a, 2) == 'Ì' || substr($topicos, $a, 2) == 'Ï' || substr($topicos, $a, 2) == 'í' || substr($topicos, $a, 2) == 'ĩ' || substr($topicos, $a, 2) == 'î' || substr($topicos, $a, 2) == 'ì' || substr($topicos, $a, 2) == 'ï' || substr($topicos, $a, 2) == 'Ó' || substr($topicos, $a, 2) == 'Õ' || substr($topicos, $a, 2) == 'Ô' || substr($topicos, $a, 2) == 'Ò' || substr($topicos, $a, 2) == 'Ö' || substr($topicos, $a, 2) == 'ó' || substr($topicos, $a, 2) == 'õ' || substr($topicos, $a, 2) == 'ô' || substr($topicos, $a, 2) == 'ò' || substr($topicos, $a, 2) == 'ö' || substr($topicos, $a, 2) == 'Ú' || substr($topicos, $a, 2) == 'Ũ' || substr($topicos, $a, 2) == 'Û' || substr($topicos, $a, 2) == 'Ù' || substr($topicos, $a, 2) == 'Ü' || substr($topicos, $a, 2) == 'ú' || substr($topicos, $a, 2) == 'ũ' || substr($topicos, $a, 2) == 'û' || substr($topicos, $a, 2) == 'ù' || substr($topicos, $a, 2) == 'ü' || substr($topicos, $a, 2) == 'ç' || substr($topicos, $a, 2) == 'ñ' || substr($topicos, $a, 2) == 'Ñ') 
-            {
-                $ad ++;
-            }
-        }
+        $ad = self::contarAcentos($topicos);
         while((strlen($l)+strlen($topicos)-1) < $j+$ad-1)
         {
             $l .= " ";
@@ -117,16 +130,16 @@ class Texto
         $l .= "$topicos $preencher";
         return $l;
     }
-    public function montar_tabela_programa(array $itens_tabela)
+    public static function montarTabelaPrograma(array $itens_tabela)
     {
         $quantidade = count($itens_tabela);
         $maximo = ($quantidade*2)+1;
         $itens  = array();
         for($i = 0 ; $i < $quantidade ;$i++)
         {
-            $itens[] = $this->removerAcentos($itens_tabela[$i]);
+            $itens[] = self::removerAcentos($itens_tabela[$i]);
         }
-        $j = $this->contagem($itens);
+        $j = self::contagem($itens);
         $adv = ($quantidade%10)+10;
         $j += $adv+9;
         $t = 0;
@@ -144,14 +157,7 @@ class Texto
             else
             {
                 $l = "print\"[ ".($t+1)." -> ".$itens_tabela[$t];
-                $ad = 0;
-                for($a = 0 ;$a < strlen($itens_tabela[$t]); $a++)
-                {
-                    if (substr($itens_tabela[$t], $a, 2) == 'Á' || substr($itens_tabela[$t], $a, 2) == 'Ã' || substr($itens_tabela[$t], $a, 2) == 'Â' || substr($itens_tabela[$t], $a, 2) == 'À' || substr($itens_tabela[$t], $a, 2) == 'Ä' || substr($itens_tabela[$t], $a, 2) == 'á' || substr($itens_tabela[$t], $a, 2) == 'ã' || substr($itens_tabela[$t], $a, 2) == 'â' || substr($itens_tabela[$t], $a, 2) == 'à' || substr($itens_tabela[$t], $a, 2) == 'ä' || substr($itens_tabela[$t], $a, 2) == 'É' || substr($itens_tabela[$t], $a, 2) == 'Ẽ' || substr($itens_tabela[$t], $a, 2) == 'Ê' || substr($itens_tabela[$t], $a, 2) == 'È' || substr($itens_tabela[$t], $a, 2) == 'Ë' || substr($itens_tabela[$t], $a, 2) == 'é' || substr($itens_tabela[$t], $a, 2) == 'ẽ' || substr($itens_tabela[$t], $a, 2) == 'ê' || substr($itens_tabela[$t], $a, 2) == 'è' || substr($itens_tabela[$t], $a, 2) == 'ë' || substr($itens_tabela[$t], $a, 2) == 'Í' || substr($itens_tabela[$t], $a, 2) == 'Ĩ' || substr($itens_tabela[$t], $a, 2) == 'Î' || substr($itens_tabela[$t], $a, 2) == 'Ì' || substr($itens_tabela[$t], $a, 2) == 'Ï' || substr($itens_tabela[$t], $a, 2) == 'í' || substr($itens_tabela[$t], $a, 2) == 'ĩ' || substr($itens_tabela[$t], $a, 2) == 'î' || substr($itens_tabela[$t], $a, 2) == 'ì' || substr($itens_tabela[$t], $a, 2) == 'ï' || substr($itens_tabela[$t], $a, 2) == 'Ó' || substr($itens_tabela[$t], $a, 2) == 'Õ' || substr($itens_tabela[$t], $a, 2) == 'Ô' || substr($itens_tabela[$t], $a, 2) == 'Ò' || substr($itens_tabela[$t], $a, 2) == 'Ö' || substr($itens_tabela[$t], $a, 2) == 'ó' || substr($itens_tabela[$t], $a, 2) == 'õ' || substr($itens_tabela[$t], $a, 2) == 'ô' || substr($itens_tabela[$t], $a, 2) == 'ò' || substr($itens_tabela[$t], $a, 2) == 'ö' || substr($itens_tabela[$t], $a, 2) == 'Ú' || substr($itens_tabela[$t], $a, 2) == 'Ũ' || substr($itens_tabela[$t], $a, 2) == 'Û' || substr($itens_tabela[$t], $a, 2) == 'Ù' || substr($itens_tabela[$t], $a, 2) == 'Ü' || substr($itens_tabela[$t], $a, 2) == 'ú' || substr($itens_tabela[$t], $a, 2) == 'ũ' || substr($itens_tabela[$t], $a, 2) == 'û' || substr($itens_tabela[$t], $a, 2) == 'ù' || substr($itens_tabela[$t], $a, 2) == 'ü' || substr($itens_tabela[$t], $a, 2) == 'ç' || substr($itens_tabela[$t], $a, 2) == 'ñ' || substr($itens_tabela[$t], $a, 2) == 'Ñ') 
-                    {
-                        $ad ++;
-                    }
-                }
+                $ad = self::contarAcentos($itens_tabela[$t]);
                 while(strlen($l) < $j+$ad-1)
                 {
                     $l .= " ";
@@ -163,19 +169,12 @@ class Texto
         }
         return $linhas;
     }
-    public function alinhar_topicos_arquivo($topicos,int $j)
+    public static function alinharTopicosArquivo(string $topicos,int $j)
     {
-        $itens[] = $this->removerAcentos($topicos);
+        $itens[] = self::removerAcentos($topicos);
         $j += 2;
         $l = $topicos;
-        $ad = 0;
-        for($a = 0 ;$a < strlen($topicos); $a++)
-        {
-            if (substr($topicos, $a, 2) == 'Á' || substr($topicos, $a, 2) == 'Ã' || substr($topicos, $a, 2) == 'Â' || substr($topicos, $a, 2) == 'À' || substr($topicos, $a, 2) == 'Ä' || substr($topicos, $a, 2) == 'á' || substr($topicos, $a, 2) == 'ã' || substr($topicos, $a, 2) == 'â' || substr($topicos, $a, 2) == 'à' || substr($topicos, $a, 2) == 'ä' || substr($topicos, $a, 2) == 'É' || substr($topicos, $a, 2) == 'Ẽ' || substr($topicos, $a, 2) == 'Ê' || substr($topicos, $a, 2) == 'È' || substr($topicos, $a, 2) == 'Ë' || substr($topicos, $a, 2) == 'é' || substr($topicos, $a, 2) == 'ẽ' || substr($topicos, $a, 2) == 'ê' || substr($topicos, $a, 2) == 'è' || substr($topicos, $a, 2) == 'ë' || substr($topicos, $a, 2) == 'Í' || substr($topicos, $a, 2) == 'Ĩ' || substr($topicos, $a, 2) == 'Î' || substr($topicos, $a, 2) == 'Ì' || substr($topicos, $a, 2) == 'Ï' || substr($topicos, $a, 2) == 'í' || substr($topicos, $a, 2) == 'ĩ' || substr($topicos, $a, 2) == 'î' || substr($topicos, $a, 2) == 'ì' || substr($topicos, $a, 2) == 'ï' || substr($topicos, $a, 2) == 'Ó' || substr($topicos, $a, 2) == 'Õ' || substr($topicos, $a, 2) == 'Ô' || substr($topicos, $a, 2) == 'Ò' || substr($topicos, $a, 2) == 'Ö' || substr($topicos, $a, 2) == 'ó' || substr($topicos, $a, 2) == 'õ' || substr($topicos, $a, 2) == 'ô' || substr($topicos, $a, 2) == 'ò' || substr($topicos, $a, 2) == 'ö' || substr($topicos, $a, 2) == 'Ú' || substr($topicos, $a, 2) == 'Ũ' || substr($topicos, $a, 2) == 'Û' || substr($topicos, $a, 2) == 'Ù' || substr($topicos, $a, 2) == 'Ü' || substr($topicos, $a, 2) == 'ú' || substr($topicos, $a, 2) == 'ũ' || substr($topicos, $a, 2) == 'û' || substr($topicos, $a, 2) == 'ù' || substr($topicos, $a, 2) == 'ü' || substr($topicos, $a, 2) == 'ç' || substr($topicos, $a, 2) == 'ñ' || substr($topicos, $a, 2) == 'Ñ') 
-            {
-                $ad ++;
-            }
-        }
+        $ad = self::contarAcentos($topicos);
         while(strlen($l) < $j+$ad-1)
         {
             $l .= " ";
@@ -183,7 +182,7 @@ class Texto
         $l .= ":";
         return $l;
     }
-    public function espacoTab(array $itens)
+    public static function espacoTab(array $itens)
     {
         $add = 0;
         foreach($itens as $item)
@@ -228,7 +227,7 @@ class Texto
         }
         return $novo;
     }
-    public function escreva_devagar(string $mensagem)
+    public static function escrevaDevagar(string $mensagem)
     {
         $tamanho = strlen($mensagem);
         for($i = 0 ; $i < $tamanho ; $i++)
@@ -245,60 +244,64 @@ class Texto
             }
         }
     }
-}
-
-class Tempo
-{
-    public function contagemDiaAteHoje($diaPartida,$mesPartida,$anoPartida)
+    public static function montarTabela(array $tabela)
     {
-        $dia = intval(date('d'));
-        $mes = intval(date('m'));
-        $ano = intval(date('Y'));
-        for($dias = 0 ; "$dia/$mes/$ano" != "$diaPartida/$mesPartida/$anoPartida";$dias++)
+        $chaves = array_keys($tabela[0]);
+        $itens = array();
+        for($i = 0 ; $i < count($chaves );$i++)
         {
-            if(($dia-1) == 0)
+            $itens[$i][] = ucfirst($chaves[$i]);
+        }
+        foreach($tabela as $t)
+        {
+            $j = 0;
+            foreach($t as $c)
             {
-                $mes--;
-                if($mes == 0)
-                {
-                    $ano--;
-                    $mes = 12;
-                    $dia = 31;
-                }
-                else
-                {
-                    switch($mes)
-                    {
-                        case 1: $dia = 31 ;break;
-                        case 2: 
-                            if($ano%4 == 0)
-                            {
-                                $dia = 29;
-                            }
-                            else
-                            {
-                                $dia = 28;
-                            }
-                        break;
-                        case 3: $dia = 31 ;break;
-                        case 4: $dia = 30 ;break;
-                        case 5: $dia = 31 ;break;
-                        case 6: $dia = 30 ;break;
-                        case 7: $dia = 31 ;break;
-                        case 8: $dia = 31 ;break;
-                        case 9: $dia = 30 ;break;
-                        case 10: $dia = 31 ;break;
-                        case 11: $dia = 30 ;break;
-                        case 12: $dia = 31 ;break;
-                    }
-                }
-            }
-            else
-            {
-                $dia--;
+                $itens[$j][] = $c; 
+                $j++;
             }
         }
-        return $dias;
+        $nums = array();
+        foreach($itens as $i)
+        {
+            $nums[] = self::contagem($i);
+        }
+        $linha = "";
+        $j = 0;
+        foreach($itens as $i)
+        {
+            $linha .= "| ".self::alinharTopicos($i[0],$nums[$j]," ");
+            $j++;
+        }
+        $l = strlen($linha)+1;
+        for($i = 0;$i<$l;$i++)
+        {
+            print "-";
+        }
+        print "\n";
+        print $linha."|\n";
+        for($i = 0;$i<$l;$i++)
+        {
+            print "-";
+        }
+        print "\n";
+
+        for($i = 1;$i < count($itens[0]);$i++)
+        {
+            $c = 0;
+            $linha = "";
+            for($j = 0;$j < count($itens);$j++)
+            {
+                $linha .= "| ".self::alinharTopicos($itens[$j][$i],$nums[$c]," ");
+                $c++;
+            }
+            $linha .= "|\n";
+            print $linha;
+            for($a = 0;$a<$l;$a++)
+            {
+                print "-";
+            }
+            print "\n";
+        }
     }
 }
-?>
